@@ -1,6 +1,6 @@
-package service;
-import dao.UserDao;
-import model.*;
+package springbootcrud.service;
+import springbootcrud.dao.UserDao;
+import springbootcrud.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long id) {
-        return userDAO.findById(id);
+        return userDAO.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -37,12 +37,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(User user) {
-        userDAO.update(user);
+        userDAO.save(user);
     }
 
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        userDAO.delete(id);
+        userDAO.deleteById(id);
     }
 }

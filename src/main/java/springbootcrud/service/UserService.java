@@ -1,6 +1,6 @@
-package service;
+package springbootcrud.service;
 
-import model.User;
+import springbootcrud.model.User;
 
 import java.util.List;
 

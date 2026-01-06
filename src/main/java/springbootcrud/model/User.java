@@ -1,8 +1,8 @@
-package model;
+package springbootcrud.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Objects;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "users")

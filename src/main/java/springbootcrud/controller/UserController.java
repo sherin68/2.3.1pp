@@ -1,9 +1,9 @@
-package controller;
+package springbootcrud.controller;
 
-import model.User;
+import springbootcrud.model.User;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import service.UserService;
+import org.springframework.web.bind.annotation.*;
+import springbootcrud.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -24,41 +25,32 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public String listUsers(Model model) {
         model.addAttribute("users", userService.findAllUsers());
-        model.addAttribute("newUser", new User());
         return "users";
     }
 
+    @GetMapping("/new")
+    public String newUserForm(Model model) {
+        model.addAttribute("user", new User());
+        return "edit";
+    }
+
     @GetMapping("/edit")
-    public String editUserForm(@RequestParam(value = "id", required = false) Long id, Model model) {
-        User user;
-        if (id != null) {
-            user = userService.findUserById(id);
-        } else {
-            user = new User();
-        }
-        model.addAttribute("user", user);
+    public String editUserForm(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("user", userService.findUserById(id));
         return "edit";
     }
 
     @PostMapping("/save")
-    public String saveOrUpdateUser(
-            @Valid
-            @ModelAttribute("user") User user,
-            BindingResult bindingResult,
-            Model model) {
-
+    public String saveUser(@Valid @ModelAttribute("user") User user,
+                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "edit";
         }
 
-        if (user.getId() == null) {
-            userService.saveUser(user);
-        } else {
-            userService.updateUser(user);
-        }
+        userService.saveUser(user);
         return "redirect:/users";
     }
 
