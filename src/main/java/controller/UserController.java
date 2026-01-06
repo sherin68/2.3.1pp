@@ -1,6 +1,8 @@
 package controller;
 
 import model.User;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 @Controller
 public class UserController {
@@ -41,18 +45,16 @@ public class UserController {
 
     @PostMapping("/save")
     public String saveOrUpdateUser(
-            @RequestParam(value = "id", required = false) Long id,
-            @RequestParam("name") String name,
-            @RequestParam("age") Integer age,
-            @RequestParam("email") String email) {
+            @Valid
+            @ModelAttribute("user") User user,
+            BindingResult bindingResult,
+            Model model) {
 
-        User user = new User();
-        user.setId(id);
-        user.setName(name);
-        user.setAge(age);
-        user.setEmail(email);
+        if (bindingResult.hasErrors()) {
+            return "edit";
+        }
 
-        if (id == null) {
+        if (user.getId() == null) {
             userService.saveUser(user);
         } else {
             userService.updateUser(user);

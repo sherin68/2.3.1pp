@@ -2,6 +2,7 @@ package model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "users")
@@ -12,12 +13,21 @@ public class User {
     private Long id;
 
     @Column(name = "name")
+    @NotBlank(message = "Имя обязательно")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я]*$", message = "Имя должно содержать только буквы")
     private String name;
 
     @Column(name = "age")
+    @NotNull(message = "Возраст обязателен для заполнения")
+    @Min(value = 1, message = "Возраст должен быть больше 0")
+    @Max(value = 120, message = "Введите реальный возраст")
     private Integer age;
 
     @Column(name = "email")
+    @NotBlank(message = "Email не может быть пустым")
+    @Email(message = "Введите корректный адрес электронной почты")
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",
+            message = "Email содержит недопустимые символы")
     private String email;
 
     public User() {
@@ -28,6 +38,7 @@ public class User {
         this.age = age;
         this.email = email;
     }
+
 
     public Long getId() {
         return id;
